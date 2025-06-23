@@ -1,0 +1,51 @@
+.diorySlideContainer {
+  display: grid;
+  grid-template-rows: 45vh 25vh 20vh;
+}
+
+.image {
+  display: flex;
+  align-items: center;
+  background-color: whitesmoke;
+}
+
+.image > img {
+  object-fit: cover;
+  width: 100vw;
+  height: 100%;
+}
+
+.infoSectionContainer {
+  /* border: solid black; */
+  display: grid;
+  grid-template-columns: 1fr 80% 1fr;
+}
+
+.infoContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.infoColumn {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 20px;
+  text-align: center;
+  margin-top: "100px";
+}
+
+.fieldLabel {
+  font-weight: bold;
+  text-align: right;
+}
+
+.imageContainer {
+  padding: 20px;
+  padding-top: 50px;
+  height: 150px;
+  gap: 40px;
+  display: flex;
+  flex-direction: row;
+  overflow: scroll;
+}

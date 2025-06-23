@@ -17,6 +17,7 @@ import {
   FiChevronLeft,
   FiInfo,
 } from "react-icons/fi";
+import { DioryInfo } from "./DioryInfo";
 
 interface Props {
   createSlide: (diory: IDioryObject, key: number) => ReactNode;
@@ -34,6 +35,7 @@ const DiorySwiper = ({ createSlide }: Props) => {
 
   const [slides, setSlides] = useState<string[]>([]);
   const [swiper, setSwiper] = useState(null);
+  const [contentSide, setContentSide] = useState(true);
 
   useEffect(() => {
     if (!focusId && urlParamFocusId) {
@@ -81,52 +83,71 @@ const DiorySwiper = ({ createSlide }: Props) => {
   };
 
   const headerItemStyle = { display: "inline-block", marginRight: "20px" };
+  const header = (
+    <div>
+      <div
+        style={headerItemStyle}
+        onClick={() => navigate(`/diory/${focusId}/grid/?storyId=${storyId}`)}
+      >
+        <FiChevronLeft size={48} style={{ cursor: "pointer" }} />
+      </div>
+      <div style={headerItemStyle} onClick={() => setContentSide(!contentSide)}>
+        <FiInfo
+          size={48}
+          style={{ cursor: "pointer" }}
+          fill={contentSide ? "white" : "grey"}
+        />
+        {/* <FiInfo size={48} style={{ cursor: "pointer" }} fill="grey" /> */}
+      </div>
+      {contentSide ? (
+        <>
+          <div style={headerItemStyle} onClick={swipeLeft}>
+            <FiArrowLeft size={48} style={{ cursor: "pointer" }} />
+          </div>
+          <div style={headerItemStyle} onClick={swipeRight}>
+            <FiArrowRight size={48} style={{ cursor: "pointer" }} />
+          </div>
+        </>
+      ) : null}
+    </div>
+  );
+
+  const diographInstance = new Diograph(diograph);
+
+  const contentSwiperContainer = (
+    <div className={styles.swiperContainer}>
+      <Swiper
+        onSwiper={setSwiper}
+        speed={200}
+        runCallbacksOnInit={false}
+        zoom={true} // Added prop: enable zoom functionality
+        modules={[Zoom]} // Added prop: include Zoom module for Swiper
+        // On swipe back on Diory or Content views
+        // - do nothing if you can't swipe to nextId
+        // - update url to indicate focus change
+        // - retrieve nextId diory's diory info and update the state
+        // - add slide if there is nextId diory doesn't exist yet
+        onSlidePrevTransitionStart={swipeLeft}
+        onSlideNextTransitionStart={swipeRight}
+      >
+        {slides.map((id, i) => {
+          if (id) {
+            const diory = diographInstance.getDiory({ id: id });
+            return createSlide(diory, i);
+          }
+          return null;
+        })}
+      </Swiper>
+    </div>
+  );
 
   return (
     <>
-      <div>
-        <div
-          style={headerItemStyle}
-          onClick={() => navigate(`/diory/${focusId}/grid/?storyId=${storyId}`)}
-        >
-          <FiChevronLeft size={48} style={{ cursor: "pointer" }} />
-        </div>
-        <div style={headerItemStyle} onClick={() => alert("BOOM")}>
-          <FiInfo size={48} style={{ cursor: "pointer" }} />
-          {/* <FiInfo size={48} style={{ cursor: "pointer" }} fill="grey" /> */}
-        </div>
-        <div style={headerItemStyle} onClick={swipeLeft}>
-          <FiArrowLeft size={48} style={{ cursor: "pointer" }} />
-        </div>
-        <div style={headerItemStyle} onClick={swipeRight}>
-          <FiArrowRight size={48} style={{ cursor: "pointer" }} />
-        </div>
-      </div>
-      {focusId && (
-        <div className={styles.swiperContainer}>
-          <Swiper
-            onSwiper={setSwiper}
-            speed={200}
-            runCallbacksOnInit={false}
-            zoom={true} // Added prop: enable zoom functionality
-            modules={[Zoom]} // Added prop: include Zoom module for Swiper
-            // On swipe back on Diory or Content views
-            // - do nothing if you can't swipe to nextId
-            // - update url to indicate focus change
-            // - retrieve nextId diory's diory info and update the state
-            // - add slide if there is nextId diory doesn't exist yet
-            onSlidePrevTransitionStart={swipeLeft}
-            onSlideNextTransitionStart={swipeRight}
-          >
-            {slides.map((id, i) => {
-              if (id) {
-                const diographInstance = new Diograph(diograph);
-                const diory = diographInstance.getDiory({ id: id });
-                return createSlide(diory, i);
-              }
-              return null;
-            })}
-          </Swiper>
+      {header}
+      {focusId && contentSide && contentSwiperContainer}
+      {focusId && !contentSide && (
+        <div style={{ marginTop: "50px" }}>
+          <DioryInfo diory={diographInstance.getDiory({ id: focusId })} />
         </div>
       )}
     </>
