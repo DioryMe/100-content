@@ -9,7 +9,7 @@ import { IDioryObject } from "@diograph/diograph/types";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "./store/store";
 import { Diograph } from "@diograph/diograph";
-import { setFocus, loadDioryContent } from "./store/diorySlice";
+import { setFocus } from "./store/diorySlice";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 interface Props {
@@ -54,23 +54,6 @@ const DiorySwiper = ({ createSlide }: Props) => {
       }
     }
   }, [focusId, swiper, diograph]);
-
-  // // Triggers loadDioryContent for focus, next & prev
-  // useEffect(() => {
-  //   if (diograph && storyId) {
-  //     const neededIds = [prevId, focusId, nextId].filter((id) => id != null);
-  //     const diographInstance = new Diograph(diograph);
-  //     neededIds.forEach((id) => {
-  //       if (!contentUrls[id]) {
-  //         const diory = diographInstance.getDiory({ id });
-  //         if (diory && diory.data) {
-  //           console.log("loadDioryContent", diory);
-  //           dispatch(loadDioryContent(diory));
-  //         }
-  //       }
-  //     });
-  //   }
-  // }, [diograph, storyId, prevId, focusId, nextId, contentUrls, dispatch]);
 
   return (
     <>
