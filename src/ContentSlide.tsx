@@ -4,6 +4,7 @@ import styles from "./ContentSwipes.module.css";
 import { IDioryObject } from "@diograph/diograph/types";
 import { RootState } from "./store/store";
 import { loadDioryContent } from "./store/diorySlice";
+import { FiImage, FiRefreshCcw, FiVideo } from "react-icons/fi";
 
 export const ContentSlide = ({ diory }: { diory: IDioryObject }) => {
   const dispatch = useDispatch();
@@ -85,22 +86,11 @@ export const ContentSlide = ({ diory }: { diory: IDioryObject }) => {
               />
             ) : loadingStatus === "rejected" ? (
               // Retry icon for a rejected load; colored red as an indicator
-              <svg width="24" height="24" viewBox="0 0 24 24">
-                <path
-                  fill="red"
-                  d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2zm1 15h-2v-2h2zm0-4h-2V7h2z"
-                />
-              </svg>
+              <FiRefreshCcw size={24} color="red" />
+            ) : isVideo ? (
+              <FiVideo size={48} />
             ) : (
-              // Default load icon when idle
-              <svg width="24" height="24" viewBox="0 0 24 24">
-                <path
-                  fill="currentColor"
-                  d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM5 5h14v14H5z"
-                />
-                <circle cx="8" cy="8" r="1.5" fill="currentColor" />
-                <path fill="currentColor" d="M21 15l-5-5-3 3-3-4-5 6H21z" />
-              </svg>
+              <FiImage size={48} />
             )}
           </div>
         )}

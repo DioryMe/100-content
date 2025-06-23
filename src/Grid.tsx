@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/store";
 import { setFocus } from "./store/diorySlice";
+import { FiHome } from "react-icons/fi";
 
 export const gridStyle = {
   display: "grid",
@@ -109,21 +110,7 @@ const Grid = () => {
         }}
       >
         <button onClick={() => navigate(`/`)}>
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M3 9L12 2L21 9"></path>
-            <path d="M9 22V12H15V22"></path>
-            <path d="M21 22H3"></path>
-          </svg>
+          <FiHome size={24} />
         </button>
         {stories.find((story) => story.id === storyId)?.text}
         {selectedHasMultipleStories &&

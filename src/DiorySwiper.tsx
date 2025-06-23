@@ -11,6 +11,12 @@ import { RootState, AppDispatch } from "./store/store";
 import { Diograph } from "@diograph/diograph";
 import { setFocus } from "./store/diorySlice";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  FiArrowLeft,
+  FiArrowRight,
+  FiChevronLeft,
+  FiInfo,
+} from "react-icons/fi";
 
 interface Props {
   createSlide: (diory: IDioryObject, key: number) => ReactNode;
@@ -55,12 +61,46 @@ const DiorySwiper = ({ createSlide }: Props) => {
     }
   }, [focusId, swiper, diograph]);
 
+  const swipeLeft = () => {
+    if (!prevId) return;
+    navigate(`/diory/${prevId}/content?storyId=${storyId}`);
+    dispatch(setFocus({ focusId: prevId, storyId }));
+    if (prevId && !slides.includes(prevId)) {
+      setSlides((slides) => [prevId, ...slides]);
+      swiper.slideTo(swiper.activeIndex + 1, 0, false);
+    }
+  };
+
+  const swipeRight = (swiper) => {
+    if (!nextId) return;
+    navigate(`/diory/${nextId}/content?storyId=${storyId}`);
+    if (nextId && !slides.includes(nextId)) {
+      setSlides((slides) => [...slides, nextId]);
+    }
+    dispatch(setFocus({ focusId: nextId, storyId }));
+  };
+
+  const headerItemStyle = { display: "inline-block", marginRight: "20px" };
+
   return (
     <>
-      <div
-        onClick={() => navigate(`/diory/${focusId}/grid/?storyId=${storyId}`)}
-      >
-        Back
+      <div>
+        <div
+          style={headerItemStyle}
+          onClick={() => navigate(`/diory/${focusId}/grid/?storyId=${storyId}`)}
+        >
+          <FiChevronLeft size={48} style={{ cursor: "pointer" }} />
+        </div>
+        <div style={headerItemStyle} onClick={() => alert("BOOM")}>
+          <FiInfo size={48} style={{ cursor: "pointer" }} />
+          {/* <FiInfo size={48} style={{ cursor: "pointer" }} fill="grey" /> */}
+        </div>
+        <div style={headerItemStyle} onClick={swipeLeft}>
+          <FiArrowLeft size={48} style={{ cursor: "pointer" }} />
+        </div>
+        <div style={headerItemStyle} onClick={swipeRight}>
+          <FiArrowRight size={48} style={{ cursor: "pointer" }} />
+        </div>
       </div>
       {focusId && (
         <div className={styles.swiperContainer}>
@@ -75,23 +115,8 @@ const DiorySwiper = ({ createSlide }: Props) => {
             // - update url to indicate focus change
             // - retrieve nextId diory's diory info and update the state
             // - add slide if there is nextId diory doesn't exist yet
-            onSlidePrevTransitionStart={(swiper) => {
-              if (!prevId) return;
-              navigate(`/diory/${prevId}/content?storyId=${storyId}`);
-              dispatch(setFocus({ focusId: prevId, storyId }));
-              if (prevId && !slides.includes(prevId)) {
-                setSlides((slides) => [prevId, ...slides]);
-                swiper.slideTo(swiper.activeIndex + 1, 0, false);
-              }
-            }}
-            onSlideNextTransitionStart={(swiper) => {
-              if (!nextId) return;
-              navigate(`/diory/${nextId}/content?storyId=${storyId}`);
-              if (nextId && !slides.includes(nextId)) {
-                setSlides((slides) => [...slides, nextId]);
-              }
-              dispatch(setFocus({ focusId: nextId, storyId }));
-            }}
+            onSlidePrevTransitionStart={swipeLeft}
+            onSlideNextTransitionStart={swipeRight}
           >
             {slides.map((id, i) => {
               if (id) {
