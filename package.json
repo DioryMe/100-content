@@ -1,5 +1,5 @@
 {
-  "name": "100-browser",
+  "name": "100-content",
   "description": "Test project for using @diograph libraries in browser based environment",
   "private": true,
   "version": "0.0.1",

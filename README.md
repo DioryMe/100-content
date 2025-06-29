@@ -1,6 +1,6 @@
-# 100% browser
+# 100% Content
 
-Diosphere proto app for 100% browser use, publicity and performance. Just viewing, no write operations nor authentication.
+Diosphere proto app for 100% browser use with content.
 
 ## Run
 
@@ -8,9 +8,3 @@ Diosphere proto app for 100% browser use, publicity and performance. Just viewin
 yarn
 yarn dev
 ```
-
-## Features
-
-1. DioryGrid browsing
-2. HttpClient
-3. Search
