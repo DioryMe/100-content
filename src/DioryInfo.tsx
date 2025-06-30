@@ -23,7 +23,11 @@ export const DioryInfo = ({ diory }) => {
         </div>
         <div className={styles.infoColumn}>
           <div className={styles.fieldLabel}>Date:</div>
-          <div>{formattedDate}</div>
+          <div>
+            <a target="_blank" href="/archive">
+              {diory.date || "-" || "12.12.2012"}
+            </a>
+          </div>
         </div>
         <div className={styles.infoColumn}>
           <div className={styles.fieldLabel}>Latlng:</div>
