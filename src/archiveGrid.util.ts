@@ -5,8 +5,8 @@ export const filterAndSortDiograph = (diographObject: IDiographObject) => {
   const diograph = new Diograph(diographObject);
 
   const activeFilter = {
-    dateStart: "2022-06-20",
-    dateEnd: "2022-06-30",
+    dateStart: "2021-06-20",
+    dateEnd: "2021-06-30",
     latlngStart: "",
     latlngEnd: "",
   };
