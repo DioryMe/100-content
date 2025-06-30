@@ -4,6 +4,7 @@ import { IDiographObject, IDioryObject } from "@diograph/diograph/types";
 import { useNavigate, useParams } from "react-router-dom";
 import containerStyles from "./ArchiveDiory.module.css";
 import styles from "./DioryInfo.module.css";
+import { calculateDateRanges, calculateGeoRanges } from "./utils/filterRanges";
 
 const ArchiveDiory = () => {
   const [globalDiograph, setGlobalDiograph] = useState<IDiographObject>(null);
@@ -41,6 +42,42 @@ const ArchiveDiory = () => {
     }
   }, [globalDiograph]);
 
+  const getDateRangeLinks = () => {
+    if (!(diory && diory.date)) return null;
+
+    try {
+      const ranges = calculateDateRanges(diory.date);
+      return [
+        { label: "±1 day", range: ranges.day },
+        { label: "±1 week", range: ranges.week },
+        { label: "±1 month", range: ranges.month },
+      ];
+    } catch (e) {
+      console.error("Error calculating date ranges:", e);
+      return null;
+    }
+  };
+
+  const getGeoRangeLinks = () => {
+    if (!(diory && diory.latlng)) return null;
+
+    try {
+      const ranges = calculateGeoRanges(diory.latlng);
+      return [
+        { label: "±10m", range: ranges["10m"] },
+        { label: "±100m", range: ranges["100m"] },
+        { label: "±1km", range: ranges["1km"] },
+        { label: "±10km", range: ranges["10km"] },
+      ];
+    } catch (e) {
+      console.error("Error calculating geo ranges:", e);
+      return null;
+    }
+  };
+
+  const dateRangeLinks = getDateRangeLinks();
+  const geoRangeLinks = getGeoRangeLinks();
+
   return (
     <div className={containerStyles.container}>
       <div className={containerStyles.headerContainer}>
@@ -56,14 +93,14 @@ const ArchiveDiory = () => {
         </div>
       </div>
       {diory && (
-        <div className={containerStyles.swiperContainer}>
-          <div className={styles.image}>
-            <img src={diory.image} />
+        <>
+          <div className={containerStyles.swiperContainer}>
+            <div className={styles.image}>
+              <img src={diory.image} />
+            </div>
           </div>
-          <div
-            style={{ marginTop: "50px", marginLeft: "50px" }}
-            className={styles.infoSectionContainer}
-          >
+          <div className={styles.infoSectionContainer}>
+            <div></div>
             <div className={styles.infoContainer}>
               <div className={styles.infoColumn}>
                 <div className={styles.fieldLabel}>Text:</div>
@@ -71,34 +108,84 @@ const ArchiveDiory = () => {
               </div>
               <div className={styles.infoColumn}>
                 <div className={styles.fieldLabel}>Date:</div>
-                <div
-                  onClick={() => {
-                    navigate(
-                      `/archive?filterDateStart=${diory.date}&filterDateEnd=${diory.date}`
-                    );
-                  }}
-                >
-                  {formattedDate() || "-" || "12.12.2012"}
+                <div>
+                  <div>{formattedDate() || "-"}</div>
+                  {dateRangeLinks && (
+                    <div
+                      style={{
+                        marginTop: "5px",
+                        display: "flex",
+                        gap: "5px",
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {dateRangeLinks.map(({ label, range }) => (
+                        <a
+                          key={label}
+                          href={`/archive?filterDateStart=${range.start}&filterDateEnd=${range.end}`}
+                          style={{
+                            fontSize: "12px",
+                            padding: "2px 5px",
+                            backgroundColor: "#e0e0e0",
+                            textDecoration: "none",
+                            borderRadius: "3px",
+                            color: "#333",
+                          }}
+                        >
+                          {label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className={styles.infoColumn}>
                 <div className={styles.fieldLabel}>Latlng:</div>
                 <div>
-                  <a
-                    target="_blank"
-                    href={
-                      diory.latlng
-                        ? `https://google.com/search?q=${diory.latlng}`
-                        : ""
-                    }
-                  >
-                    {diory.latlng || "-" || "64.42848, 41.58833"}
-                  </a>
+                  <div>
+                    <a
+                      target="_blank"
+                      href={
+                        diory.latlng
+                          ? `https://google.com/search?q=${diory.latlng}`
+                          : ""
+                      }
+                    >
+                      {/* {diory.latlng || "-"} */}
+                    </a>
+                  </div>
+                  {geoRangeLinks && (
+                    <div
+                      style={{
+                        marginTop: "5px",
+                        display: "flex",
+                        gap: "5px",
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {geoRangeLinks.map(({ label, range }) => (
+                        <a
+                          key={label}
+                          href={`/archive?latlngStart=${range.start}&latlngEnd=${range.end}`}
+                          style={{
+                            fontSize: "12px",
+                            padding: "2px 5px",
+                            backgroundColor: "#e0e0e0",
+                            textDecoration: "none",
+                            borderRadius: "3px",
+                            color: "#333",
+                          }}
+                        >
+                          {label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

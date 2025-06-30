@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getGlobalDiograph } from "./utils/globalDiograph";
 import { IDiographObject } from "@diograph/diograph/types";
 import { Diograph } from "@diograph/diograph";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const gridStyle = {
   display: "grid",
@@ -29,8 +29,8 @@ const filterAndSortDiograph = (
   const filter = {
     dateStart: urlParamFilter.dateStart || "2021-06-20",
     dateEnd: urlParamFilter.dateEnd || "2021-06-30",
-    latlngStart: "",
-    latlngEnd: "",
+    latlngStart: urlParamFilter.latlngStart || "",
+    latlngEnd: urlParamFilter.latlngEnd || "",
   };
 
   const filteredDiograph = diograph.queryDiographByDateAndGeo({
@@ -53,13 +53,25 @@ const filterAndSortDiograph = (
   return filteredAndSortedByDateDiograph;
 };
 
+interface FilterState {
+  dateStart?: string;
+  dateEnd?: string;
+  latlngStart?: string;
+  latlngEnd?: string;
+}
+
 const ArchiveGrid = () => {
   const { search } = useLocation();
-  const dateStart = new URLSearchParams(search).get("filterDateStart");
-  const dateEnd = new URLSearchParams(search).get("filterDateEnd");
+  const navigate = useNavigate();
+  const urlParams = new URLSearchParams(search);
+  const dateStart = urlParams.get("filterDateStart");
+  const dateEnd = urlParams.get("filterDateEnd");
+  const latlngStart = urlParams.get("latlngStart");
+  const latlngEnd = urlParams.get("latlngEnd");
 
   const [globalDiograph, setGlobalDiograph] = useState<IDiographObject>(null);
   const [dioryArray, setDioryArray] = useState([]);
+  const [currentFilter, setCurrentFilter] = useState<FilterState>({});
 
   useEffect(() => {
     getGlobalDiograph().then((diograph) => {
@@ -67,22 +79,92 @@ const ArchiveGrid = () => {
     });
   }, []);
 
+  // Load filter from localStorage on mount
+  useEffect(() => {
+    const storedFilter = localStorage.getItem('archiveFilter');
+    if (storedFilter) {
+      try {
+        const parsed = JSON.parse(storedFilter);
+        setCurrentFilter(parsed);
+      } catch (e) {
+        console.error('Failed to parse stored filter:', e);
+      }
+    }
+  }, []);
+
+  // Update filter when URL params change
+  useEffect(() => {
+    const newFilter: FilterState = {};
+    if (dateStart) newFilter.dateStart = dateStart;
+    if (dateEnd) newFilter.dateEnd = dateEnd;
+    if (latlngStart) newFilter.latlngStart = latlngStart;
+    if (latlngEnd) newFilter.latlngEnd = latlngEnd;
+    
+    if (Object.keys(newFilter).length > 0) {
+      setCurrentFilter(newFilter);
+      localStorage.setItem('archiveFilter', JSON.stringify(newFilter));
+    }
+  }, [dateStart, dateEnd, latlngStart, latlngEnd]);
+
   useEffect(() => {
     if (globalDiograph) {
-      const gridDiograph = filterAndSortDiograph(globalDiograph, {
-        dateStart,
-        dateEnd,
-      });
+      const gridDiograph = filterAndSortDiograph(globalDiograph, currentFilter);
       const gridContents = Object.values(gridDiograph).map((diory) => ({
         dioryId: diory.id,
         image: diory.image,
       }));
       setDioryArray(gridContents);
     }
-  }, [globalDiograph]);
+  }, [globalDiograph, currentFilter]);
+
+  const clearFilter = () => {
+    setCurrentFilter({});
+    localStorage.removeItem('archiveFilter');
+    navigate('/archive');
+  };
+
+  const hasActiveFilter = Object.keys(currentFilter).length > 0;
+
+  const formatFilterDisplay = () => {
+    const parts = [];
+    if (currentFilter.dateStart && currentFilter.dateEnd) {
+      parts.push(`Date: ${currentFilter.dateStart} - ${currentFilter.dateEnd}`);
+    }
+    if (currentFilter.latlngStart && currentFilter.latlngEnd) {
+      parts.push(`Geo: ${currentFilter.latlngStart} - ${currentFilter.latlngEnd}`);
+    }
+    return parts.join(' | ');
+  };
 
   return (
     <>
+      {hasActiveFilter && (
+        <div style={{
+          padding: '10px',
+          backgroundColor: '#f0f0f0',
+          borderBottom: '1px solid #ccc',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <span style={{ fontSize: '14px' }}>
+            Active Filter: {formatFilterDisplay()}
+          </span>
+          <button 
+            onClick={clearFilter}
+            style={{
+              padding: '5px 10px',
+              backgroundColor: '#ff6b6b',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Clear Filter
+          </button>
+        </div>
+      )}
       <div style={gridStyle}>
         {dioryArray.map(({ dioryId, image }) => (
           // TODO: Archiven diory linkattaisiin /archive/diory/...
