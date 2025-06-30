@@ -27,8 +27,8 @@ const filterAndSortDiograph = (
   console.log("filter", urlParamFilter);
 
   const filter = {
-    dateStart: urlParamFilter.dateStart || "2021-06-20",
-    dateEnd: urlParamFilter.dateEnd || "2021-06-30",
+    dateStart: urlParamFilter.dateStart || "", // || "2021-06-20",
+    dateEnd: urlParamFilter.dateEnd || "", // "2021-06-30",
     latlngStart: urlParamFilter.latlngStart || "",
     latlngEnd: urlParamFilter.latlngEnd || "",
   };
@@ -81,13 +81,13 @@ const ArchiveGrid = () => {
 
   // Load filter from localStorage on mount
   useEffect(() => {
-    const storedFilter = localStorage.getItem('archiveFilter');
+    const storedFilter = localStorage.getItem("archiveFilter");
     if (storedFilter) {
       try {
         const parsed = JSON.parse(storedFilter);
         setCurrentFilter(parsed);
       } catch (e) {
-        console.error('Failed to parse stored filter:', e);
+        console.error("Failed to parse stored filter:", e);
       }
     }
   }, []);
@@ -99,10 +99,10 @@ const ArchiveGrid = () => {
     if (dateEnd) newFilter.dateEnd = dateEnd;
     if (latlngStart) newFilter.latlngStart = latlngStart;
     if (latlngEnd) newFilter.latlngEnd = latlngEnd;
-    
+
     if (Object.keys(newFilter).length > 0) {
       setCurrentFilter(newFilter);
-      localStorage.setItem('archiveFilter', JSON.stringify(newFilter));
+      localStorage.setItem("archiveFilter", JSON.stringify(newFilter));
     }
   }, [dateStart, dateEnd, latlngStart, latlngEnd]);
 
@@ -119,8 +119,8 @@ const ArchiveGrid = () => {
 
   const clearFilter = () => {
     setCurrentFilter({});
-    localStorage.removeItem('archiveFilter');
-    navigate('/archive');
+    localStorage.removeItem("archiveFilter");
+    navigate("/archive");
   };
 
   const hasActiveFilter = Object.keys(currentFilter).length > 0;
@@ -131,34 +131,38 @@ const ArchiveGrid = () => {
       parts.push(`Date: ${currentFilter.dateStart} - ${currentFilter.dateEnd}`);
     }
     if (currentFilter.latlngStart && currentFilter.latlngEnd) {
-      parts.push(`Geo: ${currentFilter.latlngStart} - ${currentFilter.latlngEnd}`);
+      parts.push(
+        `Geo: ${currentFilter.latlngStart} - ${currentFilter.latlngEnd}`
+      );
     }
-    return parts.join(' | ');
+    return parts.join(" | ");
   };
 
   return (
     <>
       {hasActiveFilter && (
-        <div style={{
-          padding: '10px',
-          backgroundColor: '#f0f0f0',
-          borderBottom: '1px solid #ccc',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <span style={{ fontSize: '14px' }}>
+        <div
+          style={{
+            padding: "10px",
+            backgroundColor: "#f0f0f0",
+            borderBottom: "1px solid #ccc",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span style={{ fontSize: "14px" }}>
             Active Filter: {formatFilterDisplay()}
           </span>
-          <button 
+          <button
             onClick={clearFilter}
             style={{
-              padding: '5px 10px',
-              backgroundColor: '#ff6b6b',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
+              padding: "5px 10px",
+              backgroundColor: "#ff6b6b",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
             }}
           >
             Clear Filter

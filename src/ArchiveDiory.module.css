@@ -24,7 +24,7 @@
 
 .container {
   display: grid;
-  grid-template-rows: 50px 90vh;
+  grid-template-rows: 50px 40vh;
   background: white;
   color: black;
 }
