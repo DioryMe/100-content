@@ -58,10 +58,7 @@ const ArchiveDiory = () => {
       {diory && (
         <div className={containerStyles.swiperContainer}>
           <div className={styles.image}>
-            <img
-              onClick={() => navigate(`/diory/${diory.id}/content`)}
-              src={diory.image}
-            />
+            <img src={diory.image} />
           </div>
           <div
             style={{ marginTop: "50px", marginLeft: "50px" }}
@@ -74,10 +71,14 @@ const ArchiveDiory = () => {
               </div>
               <div className={styles.infoColumn}>
                 <div className={styles.fieldLabel}>Date:</div>
-                <div>
-                  <a target="_blank" href="/archive">
-                    {formattedDate() || "-" || "12.12.2012"}
-                  </a>
+                <div
+                  onClick={() => {
+                    navigate(
+                      `/archive?filterDateStart=${diory.date}&filterDateEnd=${diory.date}`
+                    );
+                  }}
+                >
+                  {formattedDate() || "-" || "12.12.2012"}
                 </div>
               </div>
               <div className={styles.infoColumn}>
