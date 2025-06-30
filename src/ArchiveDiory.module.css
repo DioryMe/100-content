@@ -1,0 +1,34 @@
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerSquare {
+  /*
+  // For some reason these doesn't apply if given as class (?!!?)
+  width: "80px";
+  height: "100%";
+  */
+}
+
+.headerSquare > img {
+  width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.headerText {
+  cursor: pointer;
+}
+
+.container {
+  display: grid;
+  grid-template-rows: 50px 90vh;
+  background: white;
+  color: black;
+}
+
+.swiperContainer {
+  width: 100vw;
+}

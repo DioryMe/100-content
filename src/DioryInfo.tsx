@@ -25,7 +25,7 @@ export const DioryInfo = ({ diory }) => {
           <div className={styles.fieldLabel}>Date:</div>
           <div>
             <a target="_blank" href="/archive">
-              {diory.date || "-" || "12.12.2012"}
+              {formattedDate || "-" || "12.12.2012"}
             </a>
           </div>
         </div>

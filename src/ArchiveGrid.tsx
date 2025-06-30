@@ -43,7 +43,7 @@ const ArchiveGrid = () => {
       <div style={gridStyle}>
         {dioryArray.map(({ dioryId, image }) => (
           // TODO: Archiven diory linkattaisiin /archive/diory/...
-          <a key={dioryId} href={`/diory/${dioryId}/content`}>
+          <a key={dioryId} href={`/archive/diory/${dioryId}`}>
             <div key={dioryId} style={itemStyle}>
               <img
                 src={image}
