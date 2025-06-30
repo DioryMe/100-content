@@ -24,22 +24,26 @@ const filterAndSortDiograph = (
 ) => {
   const diograph = new Diograph(diographObject);
 
-  console.log("filter", urlParamFilter);
-
-  const filter = {
-    dateStart: urlParamFilter.dateStart || "", // || "2021-06-20",
-    dateEnd: urlParamFilter.dateEnd || "", // "2021-06-30",
-    latlngStart: urlParamFilter.latlngStart || "",
-    latlngEnd: urlParamFilter.latlngEnd || "",
-  };
+  const filter =
+    !urlParamFilter.dateStart && !urlParamFilter.latlngStart
+      ? {
+          dateStart: "2021-06-20",
+          dateEnd: "2021-06-30",
+          latlngStart: urlParamFilter.latlngStart || "",
+          latlngEnd: urlParamFilter.latlngEnd || "",
+        }
+      : {
+          dateStart: urlParamFilter.dateStart || "",
+          dateEnd: urlParamFilter.dateEnd || "",
+          latlngStart: urlParamFilter.latlngStart || "",
+          latlngEnd: urlParamFilter.latlngEnd || "",
+        };
 
   const filteredDiograph = diograph.queryDiographByDateAndGeo({
     latlngStart: filter.latlngStart,
     latlngEnd: filter.latlngEnd,
     dateStart: filter.dateStart,
     dateEnd: filter.dateEnd,
-    // latlngStart: "61.48587998183945, 23.96633387857436",
-    // latlngEnd: "61.385879805830584, 24.241258867230393",
   });
 
   const filteredAndSortedByDateDiograph = Object.values(filteredDiograph).sort(
@@ -166,6 +170,19 @@ const ArchiveGrid = () => {
             }}
           >
             Clear Filter
+          </button>
+          <button
+            onClick={() => navigate("/")}
+            style={{
+              padding: "5px 10px",
+              backgroundColor: "#ff6b6b",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            Home
           </button>
         </div>
       )}
