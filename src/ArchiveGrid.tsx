@@ -1,7 +1,10 @@
-import { MouseEventHandler, useEffect, useState } from "react";
-import { getGridContents } from "./archiveGrid.util";
+import { useEffect, useState } from "react";
+import { filterAndSortDiograph } from "./archiveGrid.util";
+import { getGlobalDiograph } from "./utils/globalDiograph";
+import { IDiographObject } from "@diograph/diograph/types";
 
 const ArchiveGrid = () => {
+  const [globalDiograph, setGlobalDiograph] = useState<IDiographObject>(null);
   const [dioryArray, setDioryArray] = useState([]);
 
   const gridStyle = {
@@ -19,9 +22,21 @@ const ArchiveGrid = () => {
   };
 
   useEffect(() => {
-    const dioryArray = getGridContents();
-    setDioryArray(dioryArray);
+    getGlobalDiograph().then((diograph) => {
+      setGlobalDiograph(diograph);
+    });
   }, []);
+
+  useEffect(() => {
+    if (globalDiograph) {
+      const gridDiograph = filterAndSortDiograph(globalDiograph);
+      const gridContents = Object.values(gridDiograph).map((diory) => ({
+        dioryId: diory.id,
+        image: diory.image,
+      }));
+      setDioryArray(gridContents);
+    }
+  }, [globalDiograph]);
 
   return (
     <>
