@@ -7,6 +7,7 @@ import Grid from "./Grid";
 import HomePage from "./homePage";
 import ContentSwipes from "./ContentSwipes";
 import SetCredentials from "./setCredentials";
+import ArchiveGrid from "./ArchiveGrid";
 
 // Create a component that uses useLocation to check the current route
 const AppContent: React.FC = () => {
@@ -35,6 +36,7 @@ const AppContent: React.FC = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/diory/:focusId/grid" element={<Grid />} />
       <Route path="/diory/:focusId/content" element={<ContentSwipes />} />
+      <Route path="/archive" element={<ArchiveGrid />} />
       <Route path="/*" element={"Not found"} />
     </Routes>
   );
