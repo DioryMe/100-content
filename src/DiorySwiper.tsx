@@ -40,7 +40,6 @@ const DiorySwiper = ({ createSlide }: Props) => {
   useEffect(() => {
     if (!focusId && urlParamFocusId) {
       const storyId = new URLSearchParams(search).get("storyId");
-      console.log("dispatch setFocus", { focusId: urlParamFocusId, storyId });
       dispatch(setFocus({ focusId: urlParamFocusId, storyId }));
     }
   }, [focusId, urlParamFocusId]);
@@ -51,7 +50,6 @@ const DiorySwiper = ({ createSlide }: Props) => {
       const newSlides = [prevId, focusId, nextId];
       setSlides(newSlides);
 
-      console.log("latter setFocus", { focusId: urlParamFocusId, storyId });
       dispatch(setFocus({ focusId, storyId }));
 
       if (swiper) {

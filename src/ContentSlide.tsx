@@ -26,11 +26,6 @@ export const ContentSlide = ({ diory }: { diory: IDioryObject }) => {
       : false;
 
   // Choose which media to render: if loading is fulfilled, use loadedContentUrl; otherwise use fallback diory.image
-  console.log(
-    "sdf",
-    dioryContent && dioryContent.url,
-    loadingStatus === "fulfilled"
-  );
   const mediaElement =
     dioryContent && dioryContent.url && loadingStatus === "fulfilled" ? (
       isVideo ? (
